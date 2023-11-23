@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<http:listener-config name="accounts-sfdc-sapi-httpListenerConfig">
+        <http:listener-connection host="${api.host}" port="${api.port}" />
+    </http:listener-config>
+    <apikit:config name="accounts-sfdc-sapi-config" api="accounts-sfdc-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<salesforce:sfdc-config name="Salesforce_Config-req" doc:name="Salesforce Config" doc:id="1c6bb6ad-2078-453f-9b2f-779ab10345e8" >
+		<salesforce:basic-connection username="${secure::salesforce.username}" password="${secure::salesforce.password}" securityToken="${secure::salesforce.accesstoken}" url="${salesforce.url}" connectionTimeout="${salesforce.connectiontiontimeout}">
+			<reconnection >
+				<reconnect frequency="${salesforce.reconnectionfrequency}" count="${salesforce.reconnectionretry}" />
+			</reconnection>
+		</salesforce:basic-connection>
+	</salesforce:sfdc-config>
+	<global-property doc:name="Global Property" doc:id="eacec7c1-1b9f-4344-a56e-c1062b8cb7cb" name="mule.env" value="dev" />
+	<configuration-properties doc:name="Configuration properties" doc:id="0a590228-f7fb-4da8-86a5-776a13ce4f88" file="properties/${mule.env}.yaml" />
+	<global-property doc:name="Global Property" doc:id="f9cb73f1-3750-43f5-a1ef-ccf6704fa5d3" name="mule.key" value="1111222233334444" />
+		<api-gateway:autodiscovery apiId="${api.apiId}" ignoreBasePath="false" doc:name="API Autodiscovery" doc:id="f9be0c52-595f-4b49-8d8d-12b6906ffe44" flowRef="accounts-sfdc-sapi-main" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="d8eaf6d3-dd41-4014-a341-953e502434b8" file="properties/${mule.env}-secure.yaml" key="${mule.key}" />
+
+    	
+</mule>

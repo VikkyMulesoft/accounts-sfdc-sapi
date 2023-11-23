@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="post-sf-accountsSub_Flow" doc:id="96ab2b1c-81cf-4ecb-b5ed-66adf20d2289" >
+		<ee:transform doc:name="request" doc:id="ce619daf-2d3b-4b0d-9310-13ed3bc84c42" >
+			<ee:message >
+				<ee:set-payload resource="dwl/post-sf-accounts-request.dwl" />
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="log-before" doc:id="9e620a4a-a065-4841-bcdd-4e95a558569f" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"log-trace" : "beforeRequest_post-sf-accountsSub_Flow",&#10;	"correlationId": vars.x_correlationId,&#10;	"payload": payload default""&#10;}]'/>
+		<salesforce:create type="Account" doc:name="Create" doc:id="7cc060e2-adb0-420d-98c5-aa546230758e" config-ref="Salesforce_Config-req"/>
+		<ee:transform doc:name="response" doc:id="497b1ee5-f338-4dc5-aff5-5b4ae0e497a5" >
+			<ee:message >
+				<ee:set-payload resource="dwl/post-sf-account-response.dwl" />
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="log-after" doc:id="f18ddde4-07db-49ae-90ef-48490567e91e" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"log-trace" : "afterRequest_post-sf-accountsSub_Flow",&#10;	"correlationId": vars.x_correlationId,&#10;	"payload": payload default""&#10;}]'/>
+	</sub-flow>
+</mule>

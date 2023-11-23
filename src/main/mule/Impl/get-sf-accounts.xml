@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
+	<sub-flow name="get-sf-accountsSub_Flow" doc:id="695fea8f-e3af-4b29-bf1e-1d7fa9c7bee8" >
+		<logger level="INFO" doc:name="log-before" doc:id="5073671d-b518-481c-a2cf-5f03c63dcb17" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"log-trace" : "beforeRequest_get-sf-accounts-Sub_Flow",&#10;	"correlationId": vars.x_correlationId,&#10;	"payload": payload default""&#10;}]'/>
+		<salesforce:query-all doc:name="Query all" doc:id="9c9bc690-a90d-4cc3-9c33-39b7673b2e2c" config-ref="Salesforce_Config-req">
+			<salesforce:salesforce-query ><![CDATA[SELECT Name,owner.Email,AccountNumber,Phone,Fax,BillingStreet,BillingCity,BillingState,BillingPostalCode,BillingCountry,ShippingStreet,ShippingCity,ShippingState,ShippingPostalCode,ShippingCountry,Id FROM Account]]></salesforce:salesforce-query>
+		</salesforce:query-all>
+		<ee:transform doc:name="response" doc:id="db968c6e-691b-4519-8073-a634108df009" >
+			<ee:message >
+				<ee:set-payload resource="dwl/get-accounts-payload.json.dwl" />
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="log-after" doc:id="eb5afe3b-b3e0-4517-bf37-13f5715ea9fd" message='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	"log-trace" : "afterRequest_get-sf-accounts-Sub_Flow",&#10;	"correlationId": vars.x_correlationId,&#10;	"payload": payload default""&#10;}]'/>
+	</sub-flow>
+</mule>
